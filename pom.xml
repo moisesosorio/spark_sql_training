@@ -41,18 +41,18 @@
         <!-- https://mvnrepository.com/artifact/com.typesafe.scala-logging/scala-logging -->
         <dependency>
             <groupId>com.typesafe.scala-logging</groupId>
-            <artifactId>scala-logging_2.11</artifactId>
-            <version>3.5.0</version>
+            <artifactId>scala-logging_2.13</artifactId>
+            <version>3.9.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.binary.version}</artifactId>
-            <version>3.4.0</version>
+            <version>3.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_${scala.binary.version}</artifactId>
-            <version>3.4.0</version>
+            <version>3.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

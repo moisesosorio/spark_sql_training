@@ -2,7 +2,7 @@ package com.spark.sql.training
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.SparkSession
-import com.spark.sql.training.execution.{RDD => rd}
+import com.spark.sql.training.execution.{ResilientDistributedDataset => rd}
 
 protected trait ExecutionJobTrait {
   def main(args: Array[String]): Unit = {
@@ -17,6 +17,9 @@ protected trait ExecutionJobTrait {
       .getOrCreate()
 
     val executionTraining = configIn.getString("executionTraining")
+
+//    rd.rddTraining(configIn, spark)
+
     executionTraining match {
       case "1" => rd.rddTraining(configIn, spark)
       case _ => "Anything to execute"
