@@ -3,9 +3,10 @@ package com.spark.sql.training.execution
 import com.spark.sql.training.data.Inputs
 import com.spark.sql.training.config.Parameters
 import com.typesafe.config.Config
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SparkSession, DataFrame}
+import org.apache.spark.rdd.{RDD}
 
-object RDD extends Inputs with Parameters {
+object ResilientDistributedDataset extends Inputs with Parameters {
 
   def rddTraining(config: Config, spark: SparkSession): Unit = {
     basicOperations(spark)
@@ -18,17 +19,20 @@ object RDD extends Inputs with Parameters {
     /** Declare an empty RDD
      * Use case: To create a single empty row to add this row inside the dataframe
      */
-    val rddEmpty = spark.sparkContext.emptyRDD
     val rddString = spark.sparkContext.emptyRDD[String]
     val rddFourPartitions = spark.sparkContext.parallelize(Seq.empty[String], 4)
+    val num_of_partition = rddFourPartitions.getNumPartitions
+    println(s"Number of partitions: $num_of_partition")
 
     /** Create a simple RDD
      * Use case: To prepare a POC or Demo or to create our unitary test
      */
-    val rddStringFill = rddString
-    val rrdParallelize = Seq(("Rise", 1000), ("Grapes", 800), ("Sugar", 100))
-    val rddParallelize = spark.sparkContext.parallelize(rrdParallelize)
-    spark.createDataFrame(rddParallelize).show()
+    val columns = Seq("language","users_count")
+    val data = Seq(("Rise", 1000), ("Grapes", 800), ("Sugar", 100))
+    val rddParallelize: RDD[(String, Int)] = spark.sparkContext.parallelize(data)
+    rddParallelize.foreach(println)
+    //val df = spark.createDataFrame(rddParallelize).toDF(data:_*)
+    //df.show()
 
 
 
@@ -38,7 +42,7 @@ object RDD extends Inputs with Parameters {
 
     //Leer un archivo y ponerlo dentro de un RDD
     // De donde viene la variable inputPath?
-    val rddTextfile = spark.sparkContext.textFile(inputPath)
+    //val rddTextfile = spark.sparkContext.textFile(inputPath)
     //imprime todos los valores dentro del RDD
     //rddTextfile.collect().foreach(println)
     //nos muestra el tipo de dato dentro de la variable rddTextfile
@@ -49,8 +53,8 @@ object RDD extends Inputs with Parameters {
     //Creacion de un RDD vacio sin particion. Esto puede ser utilizado para artificios.
     //Por ejemplo cuando quieres crear un dataframe vacio o quieres escribir un archivo controlador
     //para idenfiticar si el proceso termino
-    val rddEmpty = spark.sparkContext.emptyRDD
-    val rddString = spark.sparkContext.emptyRDD[String]
+    //val rddEmpty = spark.sparkContext.emptyRDD
+    //val rddString = spark.sparkContext.emptyRDD[String]
 
     //println(rddEmpty)
     //println(rddString)
@@ -67,10 +71,10 @@ object RDD extends Inputs with Parameters {
 
     //Tambien podemos reparticionar el rdd una vez creado.
     //val reparticionRdd = rddTextfile.repartition(2)
-    val coalesceRdd = rddTextfile.coalesce(4)
+    //val coalesceRdd = rddTextfile.coalesce(4)
     //Descomentar para ver los numeros de particiones
     //println("re-particion:" + reparticionRdd.getNumPartitions)
-    println("coalesce:" + coalesceRdd.getNumPartitions)
+    //println("coalesce:" + coalesceRdd.getNumPartitions)
 
     //NOTA: Podemos reparticionar con repartition o con coalesce.
 
