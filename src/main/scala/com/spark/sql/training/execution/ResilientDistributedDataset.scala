@@ -4,20 +4,14 @@ import com.spark.sql.training.data.Inputs
 import com.spark.sql.training.config.Parameters
 import com.typesafe.config.Config
 import org.apache.spark.sql.{SparkSession, DataFrame}
-import org.apache.spark.rdd.{RDD}
+import org.apache.spark.rdd.RDD
 
 object ResilientDistributedDataset extends Inputs with Parameters {
 
   case class FoodRDD(ingredient: String, quantity: Int)
-
-  def rddTraining(config: Config, spark: SparkSession): Unit = {
+  
+  def basicOperations(config: Config, spark: SparkSession): Unit = {
     setVariablesParameter(config)
-    basicOperations(spark)
-
-
-  }
-
-  def basicOperations(spark: SparkSession): Unit = {
 
     /** Declare an empty RDD
      * Use case: To create a single empty row to add this row inside the dataframe
@@ -56,23 +50,5 @@ object ResilientDistributedDataset extends Inputs with Parameters {
     val result = uppercaseRDD.collect()
     result.foreach(println)
   }
-
-  def windowsFunctions(spark: SparkSession): Unit = {
-
-  }
-
-  def filterExamples(spark: SparkSession): Unit = {
-
-  }
-
-  def castingDataTypes(spark: SparkSession): Unit = {
-
-  }
-
-  def forComprehension(spark: SparkSession): Unit = {
-
-  }
-
-
-
+  
 }
