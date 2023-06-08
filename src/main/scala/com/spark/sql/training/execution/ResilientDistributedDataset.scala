@@ -57,4 +57,22 @@ object ResilientDistributedDataset extends Inputs with Parameters {
     result.foreach(println)
   }
 
+  def windowsFunctions(spark: SparkSession): Unit = {
+
+  }
+
+  def filterExamples(spark: SparkSession): Unit = {
+
+  }
+
+  def castingDataTypes(spark: SparkSession): Unit = {
+
+  }
+
+  def forComprehension(spark: SparkSession): Unit = {
+
+  }
+
+
+
 }
