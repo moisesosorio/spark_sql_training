@@ -2,7 +2,7 @@ package com.spark.sql.training
 
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.SparkSession
-import com.spark.sql.training.execution.{ResilientDistributedDataset => rd}
+import com.spark.sql.training.execution.{ResilientDistributedDataset => rd, SqlOperationsTraining => so}
 
 protected trait ExecutionJobTrait {
   def main(args: Array[String]): Unit = {
@@ -21,7 +21,9 @@ protected trait ExecutionJobTrait {
 //    rd.rddTraining(configIn, spark)
 
     executionTraining match {
-      case "1" => rd.rddTraining(configIn, spark)
+      case "1" => rd.basicOperations(configIn, spark)
+      case "2" => so.windowsFunctions(configIn, spark)
+      case "3" => so.filterExamples(configIn, spark)
       case _ => "Anything to execute"
 
     }
