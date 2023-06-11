@@ -17,9 +17,7 @@ protected trait ExecutionJobTrait {
       .getOrCreate()
 
     val executionTraining = configIn.getString("executionTraining")
-
-//    rd.rddTraining(configIn, spark)
-
+    
     executionTraining match {
       case "1" => rd.basicOperations(configIn, spark)
       case "2" => so.windowsFunctions(configIn, spark)
