@@ -3,9 +3,10 @@ package com.spark.sql.training.execution
 import com.spark.sql.training.data.Inputs
 import com.spark.sql.training.config.Parameters
 import com.typesafe.config.Config
-import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.functions.{col, row_number, lag, lead, rank, lit, ntile, avg, sum, min, max, count}
+import org.apache.spark.sql.{Row, DataFrame, SparkSession}
+import org.apache.spark.sql.functions.{col, row_number, lag, lead, rank, lit, ntile, avg, sum, min, max, count, array_contains}
 import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.types.{ArrayType, StringType, StructType}
 
 object SqlOperationsTraining extends Inputs with Parameters {
 
@@ -70,34 +71,51 @@ object SqlOperationsTraining extends Inputs with Parameters {
   def filterExamples(config: Config, spark: SparkSession): Unit = {
     setVariablesParameter(config)
     readInput(spark)
+    dataframeDummy(spark)
 
-    /** Simple filter
+    /** Sintaxes for filter clause
+     * => filter(condition: Column): Dataset[T]
+     * => filter(conditionExpr: String): Dataset[T] -using SQL expression
+     * => filter(func: T => Boolean): Dataset[T]
+     * => filter(func: FilterFunction[T]): Dataset[T]
      *
+     * Sign signature options:
+     * => col("column_name")
+     * => "column_name=='value'"
+     * => df("column_name")
      */
 
-    sqlOperations_dataframe.show()
+    val filter_df = sqlOperations_dataframe
+      .select(col("menu"), col("sugar"), col("calories"))
 
+    filter_df.filter(col("menu") === "regular").show(false)
+    filter_df.filter("menu=='regular'").show(false)
+    filter_df.filter(filter_df("menu") === "regular").show(false)
 
-    val result_male_df = sqlOperations_dataframe
-      .filter(col("gender") === "male")
-      .select(col("name"), col("age"))
-      .withColumn("age_final", col("age") + 1)
-      .sort(col("age").desc, col("name").asc)
+    filter_df.where(col("menu") === "regular").show(false)
+    filter_df.where("menu=='regular'").show(false)
+    filter_df.where(filter_df("menu") === "regular").show(false)
 
-    /**
-     * Filter with conditional evaluations (and , or, lt, gt)
+    /*** Filter with multiple condition
      */
+    val filter_multiple_conditions = col("menu") === "regular" && col("sugar") < 1
+    filter_df.filter(filter_multiple_conditions).show(false)
 
 
-    /**
-     * Filter with negative operations (!)
+    /*** Filter with negative operations (!)
      */
+    val filter_negative_operation = col("menu") === "regular"
+    filter_df.filter(!filter_multiple_conditions).show(false)
 
-
-    /** Filter with more than one evaluation
-     *
+    /*** Filter on an array column
      */
+    val filter_array_column = array_contains(col("languages"), "Java")
+    arrayExample_dataframe.filter(filter_array_column).show(false)
 
+    /*** Filter on Nested struct column
+     */
+    val filter_nested_column = col("name.lastname") === "williams"
+    arrayExample_dataframe.filter(filter_nested_column).show(false)
   }
 
   def castingDataTypes(config: Config, spark: SparkSession): Unit = {
