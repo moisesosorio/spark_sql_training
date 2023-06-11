@@ -71,22 +71,35 @@ object SqlOperationsTraining extends Inputs with Parameters {
     setVariablesParameter(config)
     readInput(spark)
 
-    /** Simple filter
+    /** Sintaxes for filter clause
+     * => filter(condition: Column): Dataset[T]
+     * => filter(conditionExpr: String): Dataset[T] -using SQL expression
+     * => filter(func: T => Boolean): Dataset[T]
+     * => filter(func: FilterFunction[T]): Dataset[T]
      *
+     * Sign signature options:
+     * => col("column_name")
+     * => "column_name=='value'"
+     * => df("column_name")
      */
 
-    sqlOperations_dataframe.show()
+    val filter_df = sqlOperations_dataframe
+      .select(col("menu"), col("sugar"), col("calories"))
 
+    filter_df.filter(col("menu") === "regular").show(false)
+    filter_df.filter("menu=='regular'").show(false)
+    filter_df.filter(filter_df("menu") === "regular").show(false)
 
-    val result_male_df = sqlOperations_dataframe
-      .filter(col("gender") === "male")
-      .select(col("name"), col("age"))
-      .withColumn("age_final", col("age") + 1)
-      .sort(col("age").desc, col("name").asc)
+    filter_df.where(col("menu") === "regular").show(false)
+    filter_df.where("menu=='regular'").show(false)
+    filter_df.where(filter_df("menu") === "regular").show(false)
 
     /**
      * Filter with conditional evaluations (and , or, lt, gt)
      */
+
+    df.filter(col("menu") === "regular" && col("calories") === "M")
+      .show(false)
 
 
     /**
