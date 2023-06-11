@@ -23,6 +23,7 @@ protected trait ExecutionJobTrait {
     executionTraining match {
       case "1" => rd.basicOperations(configIn, spark)
       case "2" => so.windowsFunctions(configIn, spark)
+      case "3" => so.filterExamples(configIn, spark)
       case _ => "Anything to execute"
 
     }
